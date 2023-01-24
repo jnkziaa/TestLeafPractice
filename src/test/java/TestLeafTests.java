@@ -4,6 +4,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.v106.systeminfo.model.Size;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -31,6 +35,28 @@ public class TestLeafTests {
     @AfterTest
     public void tearDown() {
         driver.quit();
+    }
+
+    @Test
+    public void waitTests(){
+        driver.get("https://www.leafground.com/waits.xhtml;jsessionid=node01ngvswhkbajxn1ag1pgxy0p8gn65279.node0");
+        driver.findElement(By.id("j_idt87:j_idt89")).click();
+        Wait wait = new FluentWait(driver)
+                .withTimeout(Duration.ofSeconds(10))
+                .pollingEvery(Duration.ofSeconds(10))
+                .ignoring(Exception.class);
+        wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("j_idt87:j_idt90"))));
+
+
+        driver.findElement(By.id("j_idt87:j_idt92")).click();
+        wait.until(ExpectedConditions.invisibilityOf(driver.findElement(By.id("j_idt87:j_idt93"))));
+
+        driver.findElement(By.id("j_idt87:j_idt95")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("j_idt87:j_idt96"))));
+
+        driver.findElement(By.id("j_idt87:j_idt98")).click();
+        wait.until(ExpectedConditions.textToBe(By.xpath("//button[@id='j_idt87:j_idt99']/span"), "Did you notice?"));
+
     }
 
     @Test
