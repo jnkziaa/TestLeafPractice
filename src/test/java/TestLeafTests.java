@@ -1,10 +1,7 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.devtools.v106.systeminfo.model.Size;
-import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -38,13 +35,16 @@ public class TestLeafTests {
     }
 
     @Test
-    public void waitTests(){
+    public void waitTests() throws InterruptedException {
         driver.get("https://www.leafground.com/waits.xhtml;jsessionid=node01ngvswhkbajxn1ag1pgxy0p8gn65279.node0");
-        driver.findElement(By.id("j_idt87:j_idt89")).click();
+
         Wait wait = new FluentWait(driver)
                 .withTimeout(Duration.ofSeconds(10))
-                .pollingEvery(Duration.ofSeconds(10))
-                .ignoring(Exception.class);
+                .pollingEvery(Duration.ofSeconds(2))
+                .ignoring(NoSuchElementException.class);
+
+
+        driver.findElement(By.id("j_idt87:j_idt89")).click();
         wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("j_idt87:j_idt90"))));
 
 
@@ -196,6 +196,85 @@ public class TestLeafTests {
     }
 
     @Test
+    public void alertTests() throws InterruptedException {
+        driver.get("https://www.leafground.com/alert.xhtml");
+        driver.findElement(By.id("j_idt88:j_idt91")).click();
+        driver.switchTo().alert().accept();
+
+        driver.findElement(By.id("j_idt88:j_idt93")).click();
+        driver.switchTo().alert().accept();
+
+        driver.findElement(By.id("j_idt88:j_idt95")).click();
+        driver.findElement(By.id("j_idt88:j_idt98")).click();
+
+        //driver.findElement(By.id("j_idt88:j_idt100")).click();
+        //driver.findElement(By.xpath("//a[@href='#']/span")).click();
+
+
+        driver.findElement(By.id("j_idt88:j_idt104")).click();
+        driver.switchTo().alert().sendKeys("John Albesa");
+        driver.switchTo().alert().accept();
+
+        driver.findElement(By.id("j_idt88:j_idt106")).click();
+        driver.findElement(By.id("j_idt88:j_idt108")).click();
+
+        Thread.sleep(5111);
+
+    }
+
+    @Test
+    public void clickableTests() throws InterruptedException {
+
+        driver.get("https://www.leafground.com/radio.xhtml");
+        Thread.sleep(3000);
+        driver.findElement(By.xpath("//table[@id=\'j_idt87:console1\']/tbody/tr/td[2]/div/div[2]/span")).click();
+
+        Thread.sleep(3000);
+        driver.findElement(By.xpath("//div[@id=\'j_idt87:city2\']/div/div/div/div[2]")).click();
+
+        Thread.sleep(3000);
+        driver.findElement(By.xpath("//div[@id=\'j_idt87:city2\']/div/div/div/div[2]")).click();
+
+        Thread.sleep(3000);
+        driver.findElement(By.xpath("//div[@id=\'j_idt87:age\']/div/div/div/div[2]")).click();
+
+        Thread.sleep(3000);
+        driver.findElement(By.xpath("//table[@id=\'j_idt87:console2\']/tbody/tr/td/div/div[2]/span")).click();
+    }
+
+    @Test
+    public void draggableTest() throws InterruptedException {
+        driver.get("https://www.leafground.com/drag.xhtml");
+        action = new Actions(driver);
+
+        Thread.sleep(3000);
+        WebElement drag = driver.findElement(By.xpath("//div[@id=\'form:conpnl_content\']"));
+        action.moveToElement(drag).clickAndHold().perform();
+        Thread.sleep(3000);
+        WebElement dragAndDrop = driver.findElement(By.id("form:conpnl_content"));
+        action.moveToElement(dragAndDrop).perform();
+
+        Thread.sleep(3000);
+        WebElement drag1 = driver.findElement(By.id("form:conpnl_content"));
+        action.moveToElement(drag1).release().perform();
+        driver.findElement(By.id("form:conpnl_content")).click();
+
+        Thread.sleep(3000);
+        WebElement drag2 = driver.findElement(By.xpath("//div[@id='form:drag_content']/p"));
+        action.moveToElement(drag2).clickAndHold().perform();
+
+        Thread.sleep(3000);
+        WebElement drag3 = driver.findElement(By.xpath("//div[@id='form:drag_content']/p"));
+        action.moveToElement(drag3).perform();
+
+        Thread.sleep(3000);
+        WebElement drag4 = driver.findElement(By.xpath("//div[@id='form:drag_content']/p"));
+        action.moveToElement(drag4).release().perform();
+
+
+    }
+
+    @Test
     public void buttonTests() throws InterruptedException {
         driver.get("https://www.leafground.com/button.xhtml");
         driver.findElement(By.id("j_idt88:j_idt90")).click();
@@ -226,7 +305,6 @@ public class TestLeafTests {
         for (WebElement elem : elementList) {
             System.out.println(elem);
         }
-        ;
 
         List<WebElement> webElementList = driver.findElements(By.xpath("//form[@id='j_idt88']/div/div[2]/div[4]/button"));
         System.out.println("There are: " + webElementList.size() + " rounded buttons");
